@@ -1,0 +1,468 @@
+components:
+  schemas:
+    Orders:
+      type: object
+      properties:
+        user_id:
+          description: Id del usuario de la orden
+          type: string
+        product_id:
+          description: Id de los productos de la orden
+          type: string
+        quantity:
+          description: Precio de la orden
+          type: number
+        state:
+          description: estado de la orden
+          type: string
+      example:
+        user_id: 12308dfs97124798hjfsd
+        product_id: paosj018717986742332
+        quantity: 20
+        state: reserved
+
+    OrdersUpdate:
+      type: object
+      properties:
+        user_id:
+          description: Id del usuario de la orden
+          type: string
+        product_id:
+          description: Id de los productos de la orden
+          type: string
+        quantity:
+          description: Precio de la orden
+          type: number
+        state:
+          description: estado de la orden
+          type: string
+      example:
+        user_id: 12308dfs97124798hjfsd
+        product_id: paosj018717986742332
+        quantity: 20
+        state: reserved
+
+  responses:
+    create:
+      type: object
+      properties:
+        statusCode: Indicador del estado de la respuesta
+        payload: Documento de la orden creado correctamente
+      example:
+        statusCode: 201
+        payload:
+          user_id: 12308dfs97124798hjfsd
+          product_id: paosj018717986742332
+          quantity: 20
+          state: reserved
+
+    read:
+      type: object
+      properties:
+        statusCode: Indicador del estado de la respuesta
+        payload: Devuelve los documentos de todas las ordenes del servidor
+      example:
+        statusCode: 200
+        payload:
+          - _id: 897471896234875ghdw2
+            user_id: 123024fs97124798h2jfsd
+            product_id: paosj018735986742332
+            quantity: 15
+            state: reserved
+          - _id: 897471142246875ghdw2
+            user_id: 12308dfs152124798hjfsd
+            product_id: faosj018717986742332
+            quantity: 25
+            state: reserved
+          - _id: 897471832246875ghdw2 
+            user_id: 245308dfs97124798hjfsd
+            product_id: loisj018717986742332
+            quantity: 20
+            state: reserved
+
+    readOne:
+      type: object
+      properties:
+        statusCode: Indicador del estado de la respuesta
+        payload: Devuelve el documento de la orden correspondiente al id
+      example:
+        statusCode: 200
+        payload:
+          _id: 897471832246875ghdw2 
+          user_id: 245308dfs97124798hjfsd
+          product_id: loisj018717986742332
+          quantity: 20
+          state: reserved
+
+    readByUser:
+      type: object
+      properties:
+        statusCode: Indicador del estado de la respuesta
+        payload: Devuelve las ordenes correspondientes al id del usuario
+      example:
+        statusCode: 200
+        payload:
+          - order_id: 437471832246875ghdoi 
+            user_id: 245308dfs97124798hjfsd
+            product_id: loisj018717986742332
+            quantity: 20
+            state: reserved
+          - order_id: 897471832246875ghdw2 
+            user_id: 245308dfs97124798hjfsd
+            product_id: 4354j018717286742332
+            quantity: 10
+            state: reserved
+
+    update:
+      type: object
+      properties:
+        statusCode: Indicador del estado de la respuesta
+        payload: ObjectId de la orden modificada
+      example:
+        statusCode: 200
+        payload: 6541aae1e7b2683607f2b4df
+
+    destroy:
+      type: object
+      properties:
+        statusCode: Indicador del estado de la respuesta
+        payload: ObjectId de la orden eliminada
+      example:
+        statusCode: success
+        payload: 6541aae1e7b2683607f2b4df
+  
+    auth:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: Estado de la solicitud
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        statusCode: 401
+        message: Invalid credentials
+    
+    forbidden:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: Estado de la solicitud
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        statusCode: 403
+        message: Forbidden
+    
+    no8char:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: Estado de la solicitud
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        statusCode: 400
+        message: Password must have at least 8 characters
+    
+    notFound:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: Indicador del estado de la respuesta
+        message:
+          type: string
+          description: Indicador de qué error se cometió
+      example:
+        statusCode: 404
+        message: Not found
+    
+    fatal:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: Indicador del estado de la respuesta
+        message:
+          type: string
+          description: Indicador de qué error se cometió
+      example:
+        statusCode: 500
+        message: fatal
+
+    error:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: Indicador del estado de la respuesta
+        message:
+          type: string
+          description: Indicador de qué error se cometió
+      example:
+        statusCode: 400
+        message: error
+
+    token:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: Indicador del estado de la respuesta
+        message:
+          type: string
+          description: Indicador de qué error se cometió
+      example:
+        statusCode: 400
+        message: Invalid verified token!
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+
+paths:
+  /api/orders:
+
+    post:
+      summary: Crear una nueva orden
+      tags: 
+        - Order
+      security:
+        - cookieAuth: ["PUBLIC"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/Order'
+      responses:
+        "201":
+          description: Éxito en la creación de la orden
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/create'
+        "401":
+          description: Credenciales invalidas
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/auth'
+        "403":
+          description: Acceso no permitido
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/forbidden'
+        "500":
+          description: Falla del servidor al crear una orden
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/fatal'
+
+    get:
+      summary: Leer todas las ordenes del servidor
+      tags:
+        - Order
+      security:
+        - cookieAuth: ["ADMIN"]
+      parameters:
+        - name: page
+          in: query
+          type: integer
+          description: Numero de página a mostrar
+        - name: limit
+          in: query
+          type: integer
+          description: Numero de documentos a mostrar por página
+      responses:
+        "200":
+          description: Éxito al leer las ordenes
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/read'
+        "404":
+          description: Documento/s no encontrados
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/notFound'
+        "500":
+          description: Falla del servidor al leer los documentos
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/fatal'
+
+  /api/orders/{oid}:
+
+    put:
+      summary: Actualizar los datos de una orden
+      tags:
+        - Order
+      security:
+        - cookieAuth: ["ADMIN"]
+      parameters:
+        - name: oid
+          in: path
+          required: true
+          description: ObjectId de la orden a modificar
+          schema:
+            $type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/OrderUpdate'
+      responses:
+        "200":
+          description: Éxito en la actualizacion de la orden
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/create'
+        "401":
+          description: Credenciales invalidas
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/auth'
+        "403":
+          description: Acceso no permitido
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/forbidden'
+        "404":
+          description: Orden no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/notFound'
+        "500":
+          description: Falla del servidor al actualizar una orden
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/fatal'
+
+    get:
+      summary: Leer los datos de una orden
+      tags:
+        - Order
+      parameters:
+        - name: oid
+          in: path
+          required: true
+          description: ObjectId de la orden a leer
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Éxito al leer la orden
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/readOne'
+        "404":
+          description: Documento no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/notFound'
+        "500":
+          description: Falla del servidor al leer el documento
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/fatal'
+
+    delete:
+      summary: Eliminar una orden
+      tags:
+        - Order
+      security:
+        - cookieAuth: ["ADMIN"]
+      parameters:
+        - name: oid
+          in: path
+          required: true
+          description: ObjectId de la orden a eliminar
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Éxito al eliminar la orden
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/create'
+        "401":
+          description: Credenciales invalidas
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/auth'
+        "403":
+          description: Acceso no permitido
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/forbidden'
+        "404":
+          description: Orden no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/notFound'
+        "500":
+          description: Falla del servidor al borrar la orden
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/fatal'
+
+  /api/orders/user/{user_id}:
+    get:
+      summary: Leer las ordenes correspondiente al id del usuario dado
+      tags:
+        - Order
+      security:
+        - cookieAuth: ["ADMIN"]
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: ObjectId del usuario
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Éxito al leer las ordenes
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/readByUser'
+        "404":
+          description: Documentos no encontrados
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/notFound'
+        "500":
+          description: Falla del servidor al leer el documento
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/fatal'
